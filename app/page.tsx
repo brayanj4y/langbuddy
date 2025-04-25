@@ -34,15 +34,16 @@ const toneOptions = [
   { value: "superhero", label: "Superhero" }
 ]
 
-export default function Home() {
-  return (
-    <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
-      <HomeContent />
-    </Suspense>
-  )
+function UrlParamsHandler({ setInputText, setTone, handleTransform }: {
+  setInputText: (text: string) => void
+  setTone: (tone: ToneType) => void
+  handleTransform: () => void
+}) {
+  useUrlParams(setInputText, setTone, handleTransform)
+  return null
 }
 
-function HomeContent() {
+export default function Home() {
   const [inputText, setInputText] = useState("")
   const [tone, setTone] = useState<ToneType>("gen-z")
   const [transformedText, setTransformedText] = useState("")
@@ -88,10 +89,7 @@ function HomeContent() {
     }
   }, [inputText, tone, toast])
 
-  // Use the URL params hook to handle shared links
-  useUrlParams(setInputText, setTone, handleTransform)
-
-  async function copyToClipboard() {
+  const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(transformedText)
       setIsCopied(true)
@@ -110,7 +108,7 @@ function HomeContent() {
     }
   }
 
-  async function shareResult() {
+  const shareResult = async () => {
     try {
       const url = new URL(window.location.href)
       url.searchParams.set("text", inputText)
@@ -135,6 +133,13 @@ function HomeContent() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <Suspense>
+        <UrlParamsHandler
+          setInputText={setInputText}
+          setTone={setTone}
+          handleTransform={handleTransform}
+        />
+      </Suspense>
       <main className="container mx-auto px-4 py-8 max-w-4xl flex-1">
         <div className="flex justify-between items-center mb-[365px] relative">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-black to-gray-500 dark:from-white dark:to-gray-500 bg-clip-text text-transparent">
