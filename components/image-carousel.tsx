@@ -23,17 +23,19 @@ export function ImageTransition() {
     }, [])
 
     return (
-        <div className="absolute left-1/2 -translate-x-1/2 w-[280px] h-[250px]">
-            <Image
-                src={images[currentImageIndex]}
-                alt="Decorative image"
-                fill
-                className={cn(
-                    "object-contain transition-all duration-1000",
-                    isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
-                )}
-                priority={currentImageIndex === 0}
-            />
+        <div className="relative mx-auto w-[280px] h-[250px] flex items-center justify-center">
+            <div className="relative w-full h-full">
+                <Image
+                    src={images[currentImageIndex]}
+                    alt="Decorative image"
+                    fill
+                    className={cn(
+                        "object-contain transition-all duration-1000",
+                        isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
+                    )}
+                    priority={currentImageIndex === 0}
+                />
+            </div>
         </div>
     )
 }

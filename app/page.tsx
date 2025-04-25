@@ -141,18 +141,18 @@ export default function Home() {
         />
       </Suspense>
       <main className="container mx-auto px-4 py-8 max-w-4xl flex-1">
-        <div className="flex justify-between items-center mb-[365px] relative">
+        <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-black to-gray-500 dark:from-white dark:to-gray-500 bg-clip-text text-transparent">
             Language Buddy
           </h1>
           <ThemeToggle />
-          <div className="absolute top-48 left-0 right-0 h-[250px]">
-            <ImageTransition />
-          </div>
         </div>
 
         <Card className="mb-8">
           <CardContent className="pt-6">
+            <div className="mb-6">
+              <ImageTransition />
+            </div>
             <div className="space-y-4">
               <div>
                 <label htmlFor="input-text" className="block text-sm font-medium mb-2">
