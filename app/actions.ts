@@ -60,10 +60,13 @@ export async function transformText(text: string, tone: ToneType) {
     const response = await result.response
     const transformedText = response.text()
 
-    // Store the transformation in the database
-    await storeTransformation(text, transformedText, tone)
+    // Store the transformation in the database and get the stored transformation
+    const storedTransformation = await storeTransformation(text, transformedText, tone)
 
-    return { transformedText }
+    return {
+      transformedText,
+      storedTransformation // Include the stored transformation in the response
+    }
   } catch (error) {
     console.error(`Error with model ${MODEL_NAME}:`, error)
     return {
@@ -73,7 +76,7 @@ export async function transformText(text: string, tone: ToneType) {
 }
 
 // Function to store transformations in the database
-async function storeTransformation(originalText: string, transformedText: string, tone: ToneType) {
+export async function storeTransformation(originalText: string, transformedText: string, tone: ToneType) {
   try {
     const { data, error } = await supabase
       .from('transformations')
@@ -81,21 +84,27 @@ async function storeTransformation(originalText: string, transformedText: string
         {
           original_text: originalText,
           transformed_text: transformedText,
-          tone,
-          created_at: new Date().toISOString(),
+          tone: tone,
+          created_at: new Date().toISOString()
         }
       ])
       .select()
+      .single()
 
     if (error) {
       throw error
     }
 
-    return data[0]
+    return {
+      id: data.id.toString(),
+      originalText: data.original_text,
+      transformedText: data.transformed_text,
+      tone: data.tone,
+      createdAt: data.created_at
+    }
   } catch (error) {
     console.error("Error storing transformation:", error)
-    // Continue execution even if storage fails
-    return null
+    throw error
   }
 }
 

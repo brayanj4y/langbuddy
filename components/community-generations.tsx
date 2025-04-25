@@ -19,22 +19,29 @@ export function CommunityGenerations() {
   const [sharedId, setSharedId] = useState<string | null>(null)
   const { toast } = useToast()
 
-  useEffect(() => {
-    async function loadGenerations() {
-      try {
-        setLoading(true)
-        const data = await fetchCommunityGenerations()
-        // Only take the first 2 generations
-        setGenerations(data.slice(0, 2))
-      } catch (err) {
-        setError("Failed to load community generations")
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
+  const loadGenerations = async () => {
+    try {
+      setLoading(true)
+      const data = await fetchCommunityGenerations()
+      setGenerations(data.slice(0, 2))
+      setError("")
+    } catch (err) {
+      setError("Failed to load community generations")
+      console.error(err)
+    } finally {
+      setLoading(false)
     }
+  }
 
+  // Initial load
+  useEffect(() => {
     loadGenerations()
+  }, [])
+
+  // Auto-refresh every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(loadGenerations, 30000)
+    return () => clearInterval(interval)
   }, [])
 
   async function copyToClipboard(text: string, id: string) {
