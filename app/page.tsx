@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, Suspense } from "react"
 import { transformText } from "./actions"
 import { type ToneType } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -35,6 +35,14 @@ const toneOptions = [
 ]
 
 export default function Home() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
+      <HomeContent />
+    </Suspense>
+  )
+}
+
+function HomeContent() {
   const [inputText, setInputText] = useState("")
   const [tone, setTone] = useState<ToneType>("gen-z")
   const [transformedText, setTransformedText] = useState("")
